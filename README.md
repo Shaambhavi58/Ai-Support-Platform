@@ -204,7 +204,7 @@ APP_NAME=AI Support Platform
 FRONTEND_URL=http://localhost:5173
 ```
 
-> ⚠️ **Important:** If your PostgreSQL password contains special characters like `@`, URL-encode them. For example, `Nageshwar@12` becomes `Nageshwar%4012`.
+> ⚠️ **Important:** If your PostgreSQL password contains special characters like `@`, URL-encode them. For example, `ram@12` becomes `ram%4012`.
 
 ### 4. Start the Backend
 
