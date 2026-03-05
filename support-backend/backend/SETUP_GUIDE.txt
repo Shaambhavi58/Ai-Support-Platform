@@ -1,0 +1,148 @@
+# AI Support Platform — Complete Setup Guide
+
+## WHAT YOU'VE GOT
+- backend/          ← FastAPI Python backend
+- api.js            ← Frontend API service (copy into your React src/)
+- The React app you already have (ai-support-platform.jsx)
+
+---
+
+## STEP 1: Install PostgreSQL
+
+1. Go to https://www.postgresql.org/download/windows/
+2. Download and run the installer
+3. During install:
+   - Set password for postgres user (remember this!)
+   - Keep default port: 5432
+   - Keep default locale
+4. Finish installation
+
+---
+
+## STEP 2: Create the Database
+
+1. Open "pgAdmin 4" (installed with PostgreSQL, search in Start menu)
+2. Connect to your local server (use the password you set)
+3. Right-click "Databases" → Create → Database
+4. Name it: ai_support_db
+5. Click Save
+
+---
+
+## STEP 3: Set Up the Python Backend
+
+Open a NEW Command Prompt window and run:
+
+```
+cd C:\Users\Dell
+mkdir support-backend
+cd support-backend
+```
+
+Copy the entire "backend" folder into C:\Users\Dell\support-backend\
+
+Then run:
+```
+pip install virtualenv
+python -m venv venv
+venv\Scripts\activate
+pip install -r backend\requirements.txt
+```
+
+---
+
+## STEP 4: Configure Environment Variables
+
+1. Go into the backend folder
+2. Copy .env.example and rename it to .env
+3. Open .env and fill in your values:
+
+```
+DATABASE_URL=postgresql://postgres:YOURPASSWORD@localhost:5432/ai_support_db
+SECRET_KEY=pick-any-long-random-string-here-make-it-long
+ANTHROPIC_API_KEY=sk-ant-YOUR_KEY_HERE
+```
+
+Replace:
+- YOURPASSWORD = the PostgreSQL password you set in Step 1
+- SECRET_KEY = any random long string (e.g. "mysecretkey12345abcdef")
+- ANTHROPIC_API_KEY = your actual Anthropic key
+
+---
+
+## STEP 5: Run the Backend
+
+In your Command Prompt (inside support-backend folder, venv activated):
+
+```
+cd backend
+uvicorn main:app --reload --port 8000
+```
+
+You should see:
+  INFO:     Uvicorn running on http://0.0.0.0:8000
+
+Visit http://localhost:8000/docs to see all API endpoints!
+
+---
+
+## STEP 6: Connect the Frontend
+
+1. Copy api.js into your React project's src/ folder
+   (C:\Users\Dell\ai-support-platform\src\api.js)
+
+2. The frontend now calls http://localhost:8000 for all data
+   instead of hardcoded mock data
+
+---
+
+## STEP 7: Run Both Together
+
+Terminal 1 (Backend):
+```
+cd C:\Users\Dell\support-backend\backend
+venv\Scripts\activate
+uvicorn main:app --reload --port 8000
+```
+
+Terminal 2 (Frontend):
+```
+cd C:\Users\Dell\ai-support-platform
+npm run dev
+```
+
+Open http://localhost:5173 — your app is now fully connected!
+
+---
+
+## API ENDPOINTS SUMMARY
+
+Auth:
+  POST /api/auth/register   - Create account
+  POST /api/auth/login      - Login
+  GET  /api/auth/me         - Get current user
+
+Tickets:
+  GET    /api/tickets        - List all tickets
+  POST   /api/tickets        - Create ticket
+  GET    /api/tickets/{id}   - Get ticket details
+  PATCH  /api/tickets/{id}   - Update ticket
+  DELETE /api/tickets/{id}   - Delete ticket
+  POST   /api/tickets/{id}/messages - Add message
+
+Knowledge Base:
+  GET  /api/kb              - List articles
+  POST /api/kb              - Create article
+  GET  /api/kb/{id}         - Get article
+
+AI:
+  POST /api/ai/generate     - Generate response
+  POST /api/ai/suggest/{id} - Suggest reply for ticket
+  POST /api/ai/chat         - Live chat with AI
+  POST /api/ai/kb-search    - AI search tip
+  POST /api/ai/kb-article   - Generate KB article
+
+Analytics:
+  GET /api/analytics        - Get all stats
+
+Full interactive docs: http://localhost:8000/docs
