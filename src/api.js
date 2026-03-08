@@ -1,7 +1,4 @@
-// ─── API SERVICE ─────────────────────────────────────────────────────────────
-// All calls go through this file — swap BASE_URL for production deployment
-
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://ai-support-platform-production.up.railway.app";
 
 function getToken() {
   return localStorage.getItem("token");
@@ -49,22 +46,21 @@ export const api = {
   deleteTicket: (id) => request("DELETE", `/api/tickets/${id}`),
   addMessage: (ticketId, content, isCustomer = false) =>
     request("POST", `/api/tickets/${ticketId}/messages`, { content, is_customer: isCustomer }),
+  suggestReply: (ticketId) => request("POST", `/api/ai/suggest/${ticketId}`),
 
-  // KB
+  // Knowledge Base
   getArticles: (params = {}) => {
     const q = new URLSearchParams(params).toString();
     return request("GET", `/api/kb${q ? "?" + q : ""}`);
   },
   getArticle: (id) => request("GET", `/api/kb/${id}`),
   createArticle: (data) => request("POST", "/api/kb", data),
-
-  // AI
-  generateAI: (prompt, tone, template) => request("POST", "/api/ai/generate", { prompt, tone, template }),
-  suggestReply: (ticketId, tone = "professional") =>
-    request("POST", `/api/ai/suggest/${ticketId}?tone=${tone}`),
-  chat: (messages, sessionId) => request("POST", "/api/ai/chat", { messages, session_id: sessionId }, false),
   kbSearch: (query) => request("POST", "/api/ai/kb-search", { prompt: query, tone: "helpful", template: "reply" }),
   generateArticle: (title) => request("POST", "/api/ai/kb-article", { prompt: `Generate a help article for: "${title}"`, tone: "professional", template: "reply" }),
+
+  // AI
+  chat: (messages, sessionId) => request("POST", "/api/ai/chat", { messages, session_id: sessionId }, false),
+  generateAI: (input, tone, template) => request("POST", "/api/ai/generate", { prompt: input, tone, template }),
 
   // Analytics
   getAnalytics: () => request("GET", "/api/analytics"),
