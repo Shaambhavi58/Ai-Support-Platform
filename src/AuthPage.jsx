@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://ai-support-platform-production.up.railway.app";
 
 // ─── ANIMATED BACKGROUND ─────────────────────────────────────────────────────
 function AnimatedBG() {
